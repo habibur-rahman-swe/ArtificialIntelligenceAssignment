@@ -14,7 +14,8 @@ public class Main {
 
 		flag = false;
 		System.out.println("BFS Count: " + bfs(curr, goal));
-//		System.out.println("A* Count: " + a_star(curr, goal));
+		flag = false;
+		System.out.println("A* Count: " + a_star(curr, goal));
 	}
 
 	private static int bfs(int[] curr, int[] g) {
@@ -52,18 +53,20 @@ public class Main {
 	}
 
 	private static int a_star(int[] curr, int[] g) {
-		Queue<int[]> pq = new PriorityQueue<int[]>((a, b) -> (f(b, g) + h(b, g) - f(a, g) - h(a, g)));
+		Queue<int[]> pq = new PriorityQueue<int[]>((a, b) -> (f(b, g) - f(a, g)));
 
 		pq.add(curr);
 		int cnt = 0;
 
-		while (!pq.isEmpty()) {
+		while (!pq.isEmpty() & !flag) {
 			int[] c = pq.poll();
 
-			print(c);
+//			print(c);
 
-			if (f(c, g) == g.length)
+			if (f(c, g) == g.length) {
+				flag = true;
 				break;
+			}
 
 			for (int i = 0; i < c.length; i++) {
 				int copy[] = new int[g.length];
@@ -73,8 +76,9 @@ public class Main {
 				for (int j = i + 1; j < g.length; j++) {
 					copy[j] = c[j];
 				}
-				if (f(copy, g) == f(c, g))
+				if (f(copy, c) == c.length)
 					continue;
+
 				pq.add(copy);
 			}
 			++cnt;
@@ -87,15 +91,6 @@ public class Main {
 		int cnt = 0;
 		for (int i = 0; i < curr.length; i++) {
 			if (curr[i] == goal[i])
-				++cnt;
-		}
-		return cnt;
-	}
-
-	private static int h(int[] curr, int[] goal) {
-		int cnt = 0;
-		for (int i = 0; i < curr.length; i++) {
-			if (curr[i] != goal[i])
 				++cnt;
 		}
 		return cnt;
